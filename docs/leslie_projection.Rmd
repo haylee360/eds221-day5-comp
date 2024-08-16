@@ -50,11 +50,14 @@ time_yr <- seq(from = 0, to = 8, by = 1)
 proj_year <- matrix(ncol = length(fish_year0), nrow = length(time_yr))
 
 # The line below...
-proj_year[1, ] <- fish_year0
+proj_year[1, ] <- fish_year0 #start with initial conditions 
+#each row is a time step, that's why you dot product with proj_year
+proj_year[2,] <- fish_leslie %*% proj_year[1,]
 
+# You find the population size at the next time step by doing the dot product 
 # The for loop below...
 for (i in 2:length(time_yr)) {
-  proj_year[i,] <- fish_leslie %*% proj_year[i-1,]
+  proj_year[i,] <- fish_leslie %*% proj_year[i-1,] #individuals previous year
 }
 
 
@@ -66,7 +69,8 @@ proj_df <- data.frame(time_yr, proj_year) %>%
 
 ggplot(data = proj_df, aes(x = time_yr, y = stage_population)) +
   geom_line(aes(color = lifestage)) +
-  scale_y_log10()
+  scale_y_log10() +
+  theme_minimal()
 
 ```
 
